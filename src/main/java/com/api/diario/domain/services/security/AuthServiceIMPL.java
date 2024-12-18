@@ -13,6 +13,8 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 @Service
 @RequiredArgsConstructor
 public class AuthServiceIMPL implements AuthService{
@@ -46,6 +48,7 @@ public class AuthServiceIMPL implements AuthService{
             newUsuario.setName(dto.name());
             newUsuario.setEmail(dto.email());
             newUsuario.setPassword(passwordEncoder.encode(dto.password()));
+            newUsuario.setRoles(List.of("PROFESSOR"));
 
             repository.save(newUsuario);
 

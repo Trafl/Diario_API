@@ -6,6 +6,8 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.util.List;
+
 @Entity
 @Getter
 @Setter
@@ -20,4 +22,9 @@ public class Usuario {
     private String name;
     private String email;
     private String password;
+
+    @ElementCollection(fetch = FetchType.EAGER)
+    @CollectionTable(name = "roles", joinColumns = @JoinColumn(name = "usuario_id"))
+    @Column(name = "role")
+    private List<String> roles;
 }

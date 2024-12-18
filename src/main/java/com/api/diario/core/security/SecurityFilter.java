@@ -1,5 +1,6 @@
 package com.api.diario.core.security;
 
+import com.api.diario.domain.exception.login.UserNotFoundException;
 import com.api.diario.domain.model.Usuario;
 import com.api.diario.domain.repository.UsuarioRepository;
 import jakarta.servlet.FilterChain;
@@ -8,16 +9,18 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
 
 import java.io.IOException;
-import java.util.Collections;
+import java.util.List;
 
 @Component
 @RequiredArgsConstructor
+@EnableMethodSecurity(prePostEnabled = true)
 public class SecurityFilter extends OncePerRequestFilter {
 
     private final TokenService tokenService;
@@ -27,11 +30,20 @@ public class SecurityFilter extends OncePerRequestFilter {
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
 
         var token = this.recoverToken(request);
-        var login = tokenService.validadeToken(token);
+        var decodedJWT  = tokenService.validadeToken(token);
 
-        if(login != null){
-            Usuario usuario = repository.findByEmail(login).orElseThrow(()-> new RuntimeException("User not Found"));
-            var authorities = Collections.singletonList(new SimpleGrantedAuthority("ROLE_USE"));
+        if(decodedJWT  != null){
+            var email = decodedJWT.getSubject();
+            List<String> roles = decodedJWT.getClaim("roles").asList(String.class);
+
+            Usuario usuario = repository.findByEmail(email).orElseThrow(
+                    ()-> new UserNotFoundException("User not Found"));
+
+            var authorities =roles
+                    .stream()
+                    .map(role -> new SimpleGrantedAuthority("ROLE_" + role.toUpperCase()))
+                    .toList();
+
             var authentication = new UsernamePasswordAuthenticationToken(usuario, null, authorities);
             SecurityContextHolder.getContext().setAuthentication(authentication);
         }

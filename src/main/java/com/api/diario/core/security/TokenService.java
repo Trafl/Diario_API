@@ -5,6 +5,7 @@ import com.auth0.jwt.JWT;
 import com.auth0.jwt.algorithms.Algorithm;
 import com.auth0.jwt.exceptions.JWTCreationException;
 import com.auth0.jwt.exceptions.JWTVerificationException;
+import com.auth0.jwt.interfaces.DecodedJWT;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
@@ -25,24 +26,24 @@ public class TokenService {
             Algorithm algorithm = Algorithm.HMAC256(secretKey);
 
             return JWT.create()
-                    .withIssuer("login")
+                    .withIssuer("Serviço_de_login")
                     .withSubject(usuario.getEmail())
+                    .withClaim("roles", usuario.getRoles())
                     .withExpiresAt(generateExpirationDate())
                     .sign(algorithm);
 
         } catch (JWTCreationException e){
-            throw new RuntimeException("Error ");
+            throw new RuntimeException("Error creating token");
         }
     }
 
-    public String validadeToken(String token){
+    public DecodedJWT validadeToken(String token){
         try {
             Algorithm algorithm = Algorithm.HMAC256(secretKey);
             return JWT.require(algorithm)
-                    .withIssuer("login")
+                    .withIssuer("Serviço_de_login")
                     .build()
-                    .verify(token)
-                    .getSubject();
+                    .verify(token);
 
         } catch (JWTVerificationException e){
             return null;

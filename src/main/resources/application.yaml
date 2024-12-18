@@ -1,0 +1,18 @@
+spring:
+  application:
+    name: diario_api
+
+  config:
+    import: file:.env[.properties]
+
+  datasource:
+    url: jdbc:mysql://${DB_HOST}:${DB_PORT}/${MYSQL_DATABASE}?createDatabaseIfNotExist=true&serverTimezone=UTC
+    username: ${MYSQL_USER}
+    password: ${MYSQL_PASSWORD}
+
+server:
+  port: ${SERVER_PORT}
+
+#logging:
+#  level:
+#    root: DEBUG

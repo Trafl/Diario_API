@@ -1,4 +1,6 @@
 package com.api.diario.api.auth.dto;
 
-public record ResponseDTO(String name, String token) {
+import java.util.List;
+
+public record ResponseDTO(String name, String role, String token) {
 }

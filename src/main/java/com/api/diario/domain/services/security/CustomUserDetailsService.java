@@ -1,6 +1,6 @@
 package com.api.diario.domain.services.security;
 
-import com.api.diario.domain.model.Usuario;
+import com.api.diario.domain.model.usuarios.Usuario;
 import com.api.diario.domain.repository.UsuarioRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
@@ -8,8 +8,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 
-import java.util.ArrayList;
-import java.util.stream.Collectors;
+import java.util.List;
 
 @RequiredArgsConstructor
 public class CustomUserDetailsService implements UserDetailsService {
@@ -19,13 +18,12 @@ public class CustomUserDetailsService implements UserDetailsService {
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
         Usuario usuario = repository.findByEmail(username).orElseThrow(()-> new UsernameNotFoundException("User not found"));
 
-        var authorities = usuario.getRoles()
-                .stream()
-                .map(role -> new SimpleGrantedAuthority("ROLE_" + role.toUpperCase()))
-                .collect(Collectors.toList());
+        var role = usuario.getUsuarioRole().getRole();
+
+        var authorities =  new SimpleGrantedAuthority("ROLE_" + role.toUpperCase());
 
         return new org.springframework.security.core.userdetails.
-                User(usuario.getEmail(), usuario.getPassword(), authorities);
+                User(usuario.getEmail(), usuario.getPassword(), List.of(authorities));
 
     }
 }

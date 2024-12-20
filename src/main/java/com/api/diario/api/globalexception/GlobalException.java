@@ -2,6 +2,7 @@ package com.api.diario.api.globalexception;
 
 import com.api.diario.domain.exception.login.ExistUserInDbException;
 import com.api.diario.domain.exception.login.IncorrectPasswordException;
+import com.api.diario.domain.exception.login.InvalidRoleException;
 import com.api.diario.domain.exception.login.UserNotFoundException;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.http.*;
@@ -45,6 +46,17 @@ public class GlobalException extends ResponseEntityExceptionHandler {
 
     }
 
+    @ExceptionHandler(InvalidRoleException.class)
+    ProblemDetail handlerInvalidRoleException(InvalidRoleException e) {
+        ProblemDetail problem = ProblemDetail.forStatusAndDetail(HttpStatus.BAD_REQUEST, e.getMessage());
+
+        problem.setTitle("The role is not recognized");
+        problem.setProperty("timestamp", Instant.now());
+
+        return problem;
+
+    }
+
     @ExceptionHandler(ExistUserInDbException.class)
     ProblemDetail handlerExistUserInDbException(ExistUserInDbException e) {
         ProblemDetail problem = ProblemDetail.forStatusAndDetail(HttpStatus.BAD_REQUEST, e.getMessage());
@@ -70,9 +82,9 @@ public class GlobalException extends ResponseEntityExceptionHandler {
             problem.setProperty(fieldName, message);
         });
 
-        log.error("[{}] - [GlobalExeption] - MethodArgumentNotValidException: Error validating the fields entered", timestamp);
+        log.error("[{}] - [GlobalException] - MethodArgumentNotValidException: Error validating the fields entered", timestamp);
         errors.forEach((fieldName, message) -> {
-            log.error("[{}] - [GlobalExeption] - Invalid field: {} - Message: {}", timestamp, fieldName, message);
+            log.error("[{}] - [GlobalException] - Invalid field: {} - Message: {}", timestamp, fieldName, message);
         });
 
         return new ResponseEntity<Object>(problem, status);

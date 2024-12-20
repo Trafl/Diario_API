@@ -1,7 +1,7 @@
 package com.api.diario.core.security;
 
 import com.api.diario.domain.exception.login.UserNotFoundException;
-import com.api.diario.domain.model.Usuario;
+import com.api.diario.domain.model.usuarios.Usuario;
 import com.api.diario.domain.repository.UsuarioRepository;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
@@ -30,14 +30,17 @@ public class SecurityFilter extends OncePerRequestFilter {
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
 
         var token = this.recoverToken(request);
-        var decodedJWT  = tokenService.validadeToken(token);
+        var decodedJWT  = tokenService.validateToken(token);
+
 
         if(decodedJWT  != null){
             var email = decodedJWT.getSubject();
-            List<String> roles = decodedJWT.getClaim("roles").asList(String.class);
+            List<String> roles = decodedJWT.getClaim("role").asList(String.class);
 
             Usuario usuario = repository.findByEmail(email).orElseThrow(
                     ()-> new UserNotFoundException("User not Found"));
+
+            System.out.println("doFilterInternal: " + roles);
 
             var authorities =roles
                     .stream()

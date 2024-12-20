@@ -1,12 +1,10 @@
-package com.api.diario.domain.model;
+package com.api.diario.domain.model.usuarios;
 
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-
-import java.util.List;
 
 @Entity
 @Getter
@@ -23,8 +21,6 @@ public class Usuario {
     private String email;
     private String password;
 
-    @ElementCollection(fetch = FetchType.EAGER)
-    @CollectionTable(name = "roles", joinColumns = @JoinColumn(name = "usuario_id"))
-    @Column(name = "role")
-    private List<String> roles;
+    @OneToOne(mappedBy = "usuario", cascade = CascadeType.ALL, orphanRemoval = true)
+    private UsuarioRole usuarioRole;
 }

@@ -1,4 +1,6 @@
 package com.api.diario.api.auth.dto;
 
-public record RegisterDTO(String name, String email, String password, String role) {
+import jakarta.validation.constraints.NotEmpty;
+
+public record RegisterDTO(@NotEmpty String name,@NotEmpty String email,@NotEmpty String password,@NotEmpty String role) {
 }

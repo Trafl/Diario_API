@@ -28,7 +28,9 @@ public class GlobalException extends ResponseEntityExceptionHandler {
     ProblemDetail handlerUserNotFoundException(UserNotFoundException e) {
         ProblemDetail problem = ProblemDetail.forStatusAndDetail(HttpStatus.NOT_FOUND, e.getMessage());
 
-        problem.setTitle("User not found");
+        log.warn("[{}] - GlobalException: {}", timestamp, e.getMessage());
+
+        problem.setTitle("Usuario não encontrado");
         problem.setProperty("timestamp", Instant.now());
 
         return problem;
@@ -39,7 +41,9 @@ public class GlobalException extends ResponseEntityExceptionHandler {
     ProblemDetail handlerIncorrectPasswordException(IncorrectPasswordException e) {
         ProblemDetail problem = ProblemDetail.forStatusAndDetail(HttpStatus.BAD_REQUEST, e.getMessage());
 
-        problem.setTitle("Incorrect password");
+        log.warn("[{}] - GlobalException: {}", timestamp, e.getMessage());
+
+        problem.setTitle("Senha incorreta");
         problem.setProperty("timestamp", Instant.now());
 
         return problem;
@@ -50,7 +54,9 @@ public class GlobalException extends ResponseEntityExceptionHandler {
     ProblemDetail handlerInvalidRoleException(InvalidRoleException e) {
         ProblemDetail problem = ProblemDetail.forStatusAndDetail(HttpStatus.BAD_REQUEST, e.getMessage());
 
-        problem.setTitle("The role is not recognized");
+        log.error("[{}] - GlobalException: {}", timestamp, e.getMessage());
+
+        problem.setTitle("Role não reconhecida");
         problem.setProperty("timestamp", Instant.now());
 
         return problem;
@@ -61,7 +67,9 @@ public class GlobalException extends ResponseEntityExceptionHandler {
     ProblemDetail handlerExistUserInDbException(ExistUserInDbException e) {
         ProblemDetail problem = ProblemDetail.forStatusAndDetail(HttpStatus.BAD_REQUEST, e.getMessage());
 
-        problem.setTitle("User exist try another email");
+        log.warn("[{}] - GlobalException: {}", timestamp, e.getMessage());
+
+        problem.setTitle("Já existe um usuario com esse email");
         problem.setProperty("timestamp", Instant.now());
 
         return problem;

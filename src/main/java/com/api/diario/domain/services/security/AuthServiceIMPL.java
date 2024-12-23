@@ -13,9 +13,13 @@ import com.api.diario.domain.repository.UsuarioRepository;
 import com.api.diario.domain.repository.UsuarioRoleRepository;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.log4j.Log4j2;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
+
+@Log4j2
 @Service
 @RequiredArgsConstructor
 public class AuthServiceIMPL implements AuthService{
@@ -27,8 +31,13 @@ public class AuthServiceIMPL implements AuthService{
     private final PasswordEncoder passwordEncoder;
 
     private final TokenService tokenService;
+
+    String timestamp = LocalDateTime.now().toString();
+
     @Override
     public ResponseDTO login(LoginDTO dto) {
+
+        log.info("[{}] - [AuthServiceIMPL] - Requisição de login com email: {}", timestamp, dto.email());
 
         var user = usuarioRepository.findByEmail(dto.email())
                 .orElseThrow(()-> new UserNotFoundException(dto.email()));
@@ -36,17 +45,22 @@ public class AuthServiceIMPL implements AuthService{
         var role = user.getUsuarioRole().getRole();
 
         if(passwordEncoder.matches(dto.password(), user.getPassword())){
+            log.info("[{}] - [AuthServiceIMPL] - Senha verificada com sucesso para email: {}", timestamp, dto.email());
+
             String token = tokenService.generateToken(user);
             return new ResponseDTO(user.getName(),role,token);
         }
         else{
-            throw new IncorrectPasswordException("incorrect password");
+            throw new IncorrectPasswordException();
         }
     }
 
     @Override
     @Transactional
     public ResponseDTO register(RegisterDTO dto) {
+
+        log.info("[{}] - [AuthServiceIMPL] - Requisição de registro com email: {}", timestamp, dto.email());
+
         var userInDB = usuarioRepository.findByEmail(dto.email());
 
         if (userInDB.isEmpty()) {
@@ -84,7 +98,7 @@ public class AuthServiceIMPL implements AuthService{
 
             return new ResponseDTO(newUsuario.getName(), newUsuario.getUsuarioRole().getRole(), token);
         } else {
-            throw new ExistUserInDbException("User exists. Try another email.");
+            throw new ExistUserInDbException(dto.email());
         }
     }
 }

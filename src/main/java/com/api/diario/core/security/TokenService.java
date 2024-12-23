@@ -25,7 +25,7 @@ public class TokenService {
 
     public String generateToken(Usuario usuario){
 
-        log.info("[{}] - [TokenService] start generateToken", timestamp);
+        log.info("[{}] - [TokenService] Gerando token para Usuario: {}", timestamp, usuario.getName());
 
         try {
             Algorithm algorithm = Algorithm.HMAC256(secretKey);
@@ -40,7 +40,9 @@ public class TokenService {
                     .sign(algorithm);
 
         } catch (JWTCreationException e){
-            throw new RuntimeException("Error creating token");
+            throw new RuntimeException(String.format(
+                    "Erro ao criar o token para usuari: {}", usuario.getName()
+            ));
         }
     }
 
@@ -48,7 +50,7 @@ public class TokenService {
         try {
             Algorithm algorithm = Algorithm.HMAC256(secretKey);
 
-            log.info("[{}] - [TokenService] start validateToken ", timestamp);
+            log.info("[{}] - [TokenService] Validando token", timestamp);
 
             return JWT.require(algorithm)
                     .withIssuer("Servico_de_login")
@@ -56,7 +58,7 @@ public class TokenService {
                     .verify(token);
 
         } catch (JWTVerificationException e){
-            throw new RuntimeException("Error validating token");
+            throw new RuntimeException("Erro ao validar Token: " + e.getMessage());
         }
     }
 

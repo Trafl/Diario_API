@@ -33,7 +33,7 @@ public class TokenService {
             var role = usuario.getUsuarioRole().getRole();
 
             return JWT.create()
-                    .withIssuer("Serviço_de_login")
+                    .withIssuer("Servico_de_login")
                     .withSubject(usuario.getEmail())
                     .withClaim("role", List.of(role))
                     .withExpiresAt(generateExpirationDate())
@@ -50,10 +50,8 @@ public class TokenService {
 
             log.info("[{}] - [TokenService] start validateToken ", timestamp);
 
-            System.out.println("validateToken: " + JWT.decode(token).getClaims());
-
             return JWT.require(algorithm)
-                    .withIssuer("Serviço_de_login")
+                    .withIssuer("Servico_de_login")
                     .build()
                     .verify(token);
 

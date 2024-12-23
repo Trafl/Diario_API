@@ -38,7 +38,7 @@ public class SecurityFilter extends OncePerRequestFilter {
             List<String> roles = decodedJWT.getClaim("role").asList(String.class);
 
             Usuario usuario = repository.findByEmail(email).orElseThrow(
-                    ()-> new UserNotFoundException("User not Found"));
+                    ()-> new UserNotFoundException(email));
 
             System.out.println("doFilterInternal: " + roles);
 

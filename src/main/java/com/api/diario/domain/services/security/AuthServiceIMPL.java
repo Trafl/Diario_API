@@ -31,7 +31,7 @@ public class AuthServiceIMPL implements AuthService{
     public ResponseDTO login(LoginDTO dto) {
 
         var user = usuarioRepository.findByEmail(dto.email())
-                .orElseThrow(()-> new UserNotFoundException("User not Found"));
+                .orElseThrow(()-> new UserNotFoundException(dto.email()));
 
         var role = user.getUsuarioRole().getRole();
 

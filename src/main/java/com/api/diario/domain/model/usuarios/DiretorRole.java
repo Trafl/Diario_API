@@ -11,9 +11,7 @@ import lombok.Setter;
 @Getter
 @Setter
 @NoArgsConstructor
-@AllArgsConstructor
-@Table(name = "diretores")
+@Table(name = "diretor")
 public class DiretorRole extends UsuarioRole{
 
-    private String departamento;
 }

@@ -1,9 +1,0 @@
-ALTER TABLE usuario
-ADD COLUMN roles TEXT;
-
-CREATE TABLE roles (
-    id BIGINT AUTO_INCREMENT PRIMARY KEY,
-    usuario_id BIGINT NOT NULL,
-    role VARCHAR(50) NOT NULL,
-    FOREIGN KEY (usuario_id) REFERENCES usuario(id) ON DELETE CASCADE
-);

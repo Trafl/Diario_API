@@ -11,9 +11,6 @@ import lombok.Setter;
 @Getter
 @Setter
 @NoArgsConstructor
-@AllArgsConstructor
 @Table(name = "secretaria")
 public class SecretariaRole extends UsuarioRole{
-
-    private String departamento;
 }

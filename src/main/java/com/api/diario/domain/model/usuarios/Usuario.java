@@ -21,6 +21,6 @@ public class Usuario {
     private String email;
     private String password;
 
-    @OneToOne(mappedBy = "usuario", cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToOne(mappedBy = "usuario", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
     private UsuarioRole usuarioRole;
 }

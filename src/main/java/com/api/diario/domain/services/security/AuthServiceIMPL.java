@@ -69,26 +69,7 @@ public class AuthServiceIMPL implements AuthService{
             newUsuario.setEmail(dto.email());
             newUsuario.setPassword(passwordEncoder.encode(dto.password()));
 
-            UsuarioRole usuarioRole;
-
-            if (dto.role().equalsIgnoreCase("PROFESSOR")) {
-                usuarioRole = new ProfessorRole();
-                ((ProfessorRole) usuarioRole).setEspecialidade("Matematica");
-
-            } else if (dto.role().equalsIgnoreCase("DIRETOR")) {
-                usuarioRole = new DiretorRole();
-                ((DiretorRole) usuarioRole).setDepartamento("Diretor");
-
-            }else if (dto.role().equalsIgnoreCase("SECRETARIA")) {
-                usuarioRole = new SecretariaRole();
-                ((SecretariaRole) usuarioRole).setDepartamento("secretaria");
-
-            } else {
-                throw new InvalidRoleException("The provided role '" + dto.role() + "' is not recognized.");
-            }
-
-            usuarioRole.setRole(dto.role().toUpperCase());
-            usuarioRole.setUsuario(newUsuario);
+            UsuarioRole usuarioRole = getUsuarioRole(dto, newUsuario);
             newUsuario.setUsuarioRole(usuarioRole);
 
             newUsuario = usuarioRepository.save(newUsuario);
@@ -100,5 +81,26 @@ public class AuthServiceIMPL implements AuthService{
         } else {
             throw new ExistUserInDbException(dto.email());
         }
+    }
+
+    private UsuarioRole getUsuarioRole(RegisterDTO dto, Usuario newUsuario) {
+        UsuarioRole usuarioRole;
+
+        if (dto.role().equalsIgnoreCase("PROFESSOR")) {
+            usuarioRole = new ProfessorRole();
+
+        } else if (dto.role().equalsIgnoreCase("DIRETOR")) {
+            usuarioRole = new DiretorRole();
+
+        }else if (dto.role().equalsIgnoreCase("SECRETARIA")) {
+            usuarioRole = new SecretariaRole();
+
+        } else {
+            throw new InvalidRoleException("A role fornecida: '" + dto.role() + "' não esta nos registros");
+        }
+
+        usuarioRole.setRole(dto.role().toUpperCase());
+        usuarioRole.setUsuario(newUsuario);
+        return usuarioRole;
     }
 }

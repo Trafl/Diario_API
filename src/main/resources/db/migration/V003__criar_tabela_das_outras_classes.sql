@@ -8,9 +8,9 @@ CREATE TABLE turma (
 CREATE TABLE aluno (
     id BIGINT AUTO_INCREMENT PRIMARY KEY,
     nome VARCHAR(255) NOT NULL,
-    numero_matricula VARCHAR(50) NOT NULL,
+    numero_matricula VARCHAR(50) NOT NULL UNIQUE,
     status VARCHAR(50) NOT NULL,
-    is_pdc TINYINT(1),
+    is_pcd TINYINT(1),
     turma_id BIGINT,
     FOREIGN KEY (turma_id) REFERENCES turma(id) ON DELETE SET NULL
 );

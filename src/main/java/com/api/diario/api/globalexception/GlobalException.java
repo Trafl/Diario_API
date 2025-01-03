@@ -1,5 +1,7 @@
 package com.api.diario.api.globalexception;
 
+import com.api.diario.domain.exception.aluno.AlunoNotFoundException;
+import com.api.diario.domain.exception.aluno.DataExistingException;
 import com.api.diario.domain.exception.login.ExistUserInDbException;
 import com.api.diario.domain.exception.login.IncorrectPasswordException;
 import com.api.diario.domain.exception.login.InvalidRoleException;
@@ -24,8 +26,11 @@ public class GlobalException extends ResponseEntityExceptionHandler {
 
     private String timestamp = LocalDateTime.now().toString();
 
+    //-------------LOGIN---------------------------------
+
     @ExceptionHandler(UserNotFoundException.class)
     ProblemDetail handlerUserNotFoundException(UserNotFoundException e) {
+
         ProblemDetail problem = ProblemDetail.forStatusAndDetail(HttpStatus.NOT_FOUND, e.getMessage());
 
         log.warn("[{}] - GlobalException: {}", timestamp, e.getMessage());
@@ -39,6 +44,7 @@ public class GlobalException extends ResponseEntityExceptionHandler {
 
     @ExceptionHandler(IncorrectPasswordException.class)
     ProblemDetail handlerIncorrectPasswordException(IncorrectPasswordException e) {
+
         ProblemDetail problem = ProblemDetail.forStatusAndDetail(HttpStatus.BAD_REQUEST, e.getMessage());
 
         log.warn("[{}] - GlobalException: {}", timestamp, e.getMessage());
@@ -52,6 +58,7 @@ public class GlobalException extends ResponseEntityExceptionHandler {
 
     @ExceptionHandler(InvalidRoleException.class)
     ProblemDetail handlerInvalidRoleException(InvalidRoleException e) {
+
         ProblemDetail problem = ProblemDetail.forStatusAndDetail(HttpStatus.BAD_REQUEST, e.getMessage());
 
         log.error("[{}] - GlobalException: {}", timestamp, e.getMessage());
@@ -65,11 +72,42 @@ public class GlobalException extends ResponseEntityExceptionHandler {
 
     @ExceptionHandler(ExistUserInDbException.class)
     ProblemDetail handlerExistUserInDbException(ExistUserInDbException e) {
+
         ProblemDetail problem = ProblemDetail.forStatusAndDetail(HttpStatus.BAD_REQUEST, e.getMessage());
 
         log.warn("[{}] - GlobalException: {}", timestamp, e.getMessage());
 
         problem.setTitle("Já existe um usuario com esse email");
+        problem.setProperty("timestamp", Instant.now());
+
+        return problem;
+
+    }
+
+    //-------------ALUNO---------------------------------
+
+    @ExceptionHandler(DataExistingException.class)
+    ProblemDetail handlerDataExistingException(DataExistingException e) {
+
+        ProblemDetail problem = ProblemDetail.forStatusAndDetail(HttpStatus.BAD_REQUEST, e.getMessage());
+
+        log.warn("[{}] - GlobalException: {}", timestamp, e.getMessage());
+
+        problem.setTitle("Já existe um Aluno com essas informações");
+        problem.setProperty("timestamp", Instant.now());
+
+        return problem;
+
+    }
+
+    @ExceptionHandler(AlunoNotFoundException.class)
+    ProblemDetail handlerAlunoNotFoundException(AlunoNotFoundException e) {
+
+        ProblemDetail problem = ProblemDetail.forStatusAndDetail(HttpStatus.NOT_FOUND, e.getMessage());
+
+        log.warn("[{}] - GlobalException: {}", timestamp, e.getMessage());
+
+        problem.setTitle("Aluno não foi encontrado");
         problem.setProperty("timestamp", Instant.now());
 
         return problem;

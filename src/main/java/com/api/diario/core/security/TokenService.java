@@ -41,7 +41,7 @@ public class TokenService {
 
         } catch (JWTCreationException e){
             throw new RuntimeException(String.format(
-                    "Erro ao criar o token para usuari: {}", usuario.getName()
+                    "Erro ao criar o token para usuario: {}", usuario.getName()
             ));
         }
     }

@@ -8,6 +8,7 @@ import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.log4j.Log4j2;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
@@ -18,6 +19,7 @@ import org.springframework.web.filter.OncePerRequestFilter;
 import java.io.IOException;
 import java.util.List;
 
+@Log4j2
 @Component
 @RequiredArgsConstructor
 @EnableMethodSecurity(prePostEnabled = true)
@@ -30,26 +32,30 @@ public class SecurityFilter extends OncePerRequestFilter {
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
 
         var token = this.recoverToken(request);
-        var decodedJWT  = tokenService.validateToken(token);
 
+        if (token != null) {
+            try {
+                var decodedJWT = tokenService.validateToken(token);
 
-        if(decodedJWT  != null){
-            var email = decodedJWT.getSubject();
-            List<String> roles = decodedJWT.getClaim("role").asList(String.class);
+                if (decodedJWT != null) {
+                    var email = decodedJWT.getSubject();
+                    List<String> roles = decodedJWT.getClaim("role").asList(String.class);
 
-            Usuario usuario = repository.findByEmail(email).orElseThrow(
-                    ()-> new UserNotFoundException(email));
+                    Usuario usuario = repository.findByEmail(email)
+                            .orElseThrow(() -> new UserNotFoundException(email));
 
-            System.out.println("doFilterInternal: " + roles);
+                    var authorities = roles.stream()
+                            .map(role -> new SimpleGrantedAuthority("ROLE_" + role.toUpperCase()))
+                            .toList();
 
-            var authorities =roles
-                    .stream()
-                    .map(role -> new SimpleGrantedAuthority("ROLE_" + role.toUpperCase()))
-                    .toList();
-
-            var authentication = new UsernamePasswordAuthenticationToken(usuario, null, authorities);
-            SecurityContextHolder.getContext().setAuthentication(authentication);
+                    var authentication = new UsernamePasswordAuthenticationToken(usuario, null, authorities);
+                    SecurityContextHolder.getContext().setAuthentication(authentication);
+                }
+            } catch (IllegalArgumentException e) {
+                log.warn("Token inválido ou ausente: {}", e.getMessage());
+            }
         }
+
         filterChain.doFilter(request, response);
     }
 

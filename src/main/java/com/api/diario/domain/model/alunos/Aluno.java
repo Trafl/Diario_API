@@ -10,6 +10,7 @@ import lombok.Setter;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
@@ -29,19 +30,19 @@ public class Aluno {
     private String numeroMatricula;
 
     @Enumerated(EnumType.STRING)
-    private Status status;
+    private Status status = Status.ATIVO;
 
-    private Boolean isPdc;
+    private Boolean isPcd;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "turma_id")
     private Turma turma;
 
     @OneToMany(mappedBy = "aluno", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
-    private Set<Nota> notas;
+    private Set<Nota> notas = new HashSet<>();
 
     @OneToMany(mappedBy = "aluno", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
-    private Set<Frequencia> frequencias;
+    private Set<Frequencia> frequencias = new HashSet<>();
 
     @OneToMany(mappedBy = "aluno", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
     private List<HistoricoTurma> historicoTurmas = new ArrayList<>();

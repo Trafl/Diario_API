@@ -45,8 +45,7 @@ public class SecurityFilter extends OncePerRequestFilter {
                             .orElseThrow(() -> new UserNotFoundException(email));
 
                     var authorities = roles.stream()
-                            .map(role -> new SimpleGrantedAuthority("ROLE_" + role.toUpperCase()))
-                            .toList();
+                            .map(role -> new SimpleGrantedAuthority("ROLE_" + role.toUpperCase())).toList();
 
                     var authentication = new UsernamePasswordAuthenticationToken(usuario, null, authorities);
                     SecurityContextHolder.getContext().setAuthentication(authentication);

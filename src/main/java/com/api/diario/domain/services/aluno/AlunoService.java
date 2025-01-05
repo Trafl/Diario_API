@@ -4,6 +4,8 @@ import com.api.diario.domain.model.alunos.Aluno;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
+import java.util.List;
+
 public interface AlunoService {
 
     Aluno addAluno(Aluno aluno);
@@ -16,5 +18,7 @@ public interface AlunoService {
 
     void disableAluno(Long id);
 
-    void TransferAluno(Long id);
+    void transferAluno(Long id);
+
+    List<Aluno> getAlunosByIds(List<Long> ids);
 }

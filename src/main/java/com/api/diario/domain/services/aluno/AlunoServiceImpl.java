@@ -3,8 +3,10 @@ package com.api.diario.domain.services.aluno;
 import com.api.diario.api.aluno.mapper.AlunoMapper;
 import com.api.diario.domain.exception.aluno.AlunoNotFoundException;
 import com.api.diario.domain.exception.aluno.DataExistingException;
+import com.api.diario.domain.exception.historicoturma.HistoricoNotFoundException;
 import com.api.diario.domain.model.alunos.Aluno;
 import com.api.diario.domain.model.alunos.Status;
+import com.api.diario.domain.model.turma.HistoricoTurma;
 import com.api.diario.domain.repository.AlunoRepository;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
@@ -15,7 +17,9 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Log4j2
 @Service
@@ -30,7 +34,7 @@ public class AlunoServiceImpl implements AlunoService{
 
     @Override
     public Aluno addAluno(Aluno aluno) {
-        log.info("[{}] - [AlunoServiceImpl] - Adicionando Aluno de nome: {}", timestamp, aluno.getNome());
+        log.info("[{}] - [AlunoServiceImpl] - Adicionando Aluno de nome: {} - addAluno()", timestamp, aluno.getNome());
         try{
             return repository.save(aluno);
         }catch (DataIntegrityViolationException e){
@@ -41,7 +45,7 @@ public class AlunoServiceImpl implements AlunoService{
 
     @Override
     public Aluno getOneAluno(Long id) {
-        log.info("[{}] - [AlunoServiceImpl] - Pesquisando Aluno de id: {}", timestamp, id);
+        log.info("[{}] - [AlunoServiceImpl] - Pesquisando Aluno de id: {} - getOneAluno()", timestamp, id);
 
         return repository.findById(id).orElseThrow(
                 () -> new AlunoNotFoundException(id)
@@ -51,7 +55,7 @@ public class AlunoServiceImpl implements AlunoService{
     @Override
     public Page<Aluno> listAlunos(String nome, String numeroMatricula, String status, Boolean isPcd, Long turma_id, Pageable pageable) {
 
-        log.info("[{}] - [AlunoServiceImpl] - Pesquisando alunos", timestamp);
+        log.info("[{}] - [AlunoServiceImpl] - Pesquisando alunos - listAlunos()", timestamp);
 
         var spec = Specification.where(AlunoSpecifications.hasNome(nome))
                 .and(AlunoSpecifications.hasNumeroMatricula(numeroMatricula))
@@ -65,7 +69,7 @@ public class AlunoServiceImpl implements AlunoService{
     @Override
     @Transactional
     public Aluno updateAluno(Long id, Aluno alunoUpdate) {
-        log.info("[{}] - [AlunoServiceImpl] - Aluno de id: {} esta sendo atualizado", timestamp, id);
+        log.info("[{}] - [AlunoServiceImpl] - Aluno de id: {} esta sendo atualizado - updateAluno()", timestamp, id);
         var alunoInDb = getOneAluno(id);
         mapper.updateAluno(alunoUpdate, alunoInDb);
         return repository.save(alunoInDb);
@@ -75,18 +79,40 @@ public class AlunoServiceImpl implements AlunoService{
     @Transactional
     public void disableAluno(Long id) {
         //Criar função para encerrar a turma no historico do aluno ao desabilitar
-        var alunoInDb = getOneAluno(id);
-        alunoInDb.setStatus(Status.INATIVO);
-        log.info("[{}] - [AlunoServiceImpl] - Aluno de id: {} foi desabilitado", timestamp, alunoInDb.getId());
+        var aluno = getOneAluno(id);
+
+        if (aluno.getStatus() == Status.INATIVO) {
+            log.warn("[{}] - [AlunoServiceImpl] - Aluno de id: {} já está inativo - disableAluno()", timestamp, aluno.getId());
+            return;
+        }
+        aluno.setStatus(Status.INATIVO);
+
+        finishHistorico(id, aluno);
+
+        repository.save(aluno);
+        log.info("[{}] - [AlunoServiceImpl] - Aluno de id: {} foi desabilitado - disableAluno()", timestamp, aluno.getId());
     }
 
     @Override
     @Transactional
-    public void TransferAluno(Long id) {
+    public void transferAluno(Long id) {
         //Criar função para encerrar a turma no historico do aluno ao transferir
-        var alunoInDb = getOneAluno(id);
-        alunoInDb.setStatus(Status.TRANSFERIDO);
-        log.info("[{}] - [AlunoServiceImpl] - Aluno de id: {} foi transferido", timestamp, alunoInDb.getId());
+        var aluno = getOneAluno(id);
+
+        if (aluno.getStatus() == Status.TRANSFERIDO) {
+            log.warn("[{}] - [AlunoServiceImpl] - Aluno de id: {} já está transferido - transferAluno()", timestamp, aluno.getId());
+            return;
+        }
+        aluno.setStatus(Status.TRANSFERIDO);
+        finishHistorico(id, aluno);
+
+        repository.save(aluno);
+        log.info("[{}] - [AlunoServiceImpl] - Aluno de id: {} foi transferido - TransferAluno()", timestamp, aluno.getId());
+    }
+
+    @Override
+    public List<Aluno> getAlunosByIds(List<Long> ids) {
+        return repository.findAllById(ids);
     }
 
     private String extractConstraintName(DataIntegrityViolationException e) {
@@ -100,5 +126,15 @@ public class AlunoServiceImpl implements AlunoService{
             }
         }
         return "Dados já existentes no sistema.";
+    }
+
+    private void finishHistorico(Long id, Aluno aluno) {
+        HistoricoTurma historicoAtual = aluno.getHistoricoTurmas()
+                .stream()
+                .filter(h -> h.getDataFim() == null)
+                .findFirst()
+                .orElseThrow(
+                        () -> new HistoricoNotFoundException(id));
+        historicoAtual.setDataFim(LocalDate.now());
     }
 }

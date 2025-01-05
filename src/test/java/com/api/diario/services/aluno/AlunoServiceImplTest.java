@@ -3,8 +3,11 @@ package com.api.diario.services.aluno;
 import com.api.diario.api.aluno.mapper.AlunoMapper;
 import com.api.diario.domain.exception.aluno.AlunoNotFoundException;
 import com.api.diario.domain.exception.aluno.DataExistingException;
+import com.api.diario.domain.exception.historicoturma.HistoricoNotFoundException;
 import com.api.diario.domain.model.alunos.Aluno;
 import com.api.diario.domain.model.alunos.Status;
+import com.api.diario.domain.model.turma.HistoricoTurma;
+import com.api.diario.domain.model.turma.Turma;
 import com.api.diario.domain.repository.AlunoRepository;
 import com.api.diario.domain.services.aluno.AlunoServiceImpl;
 import org.junit.jupiter.api.BeforeEach;
@@ -22,6 +25,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
 
+import java.time.LocalDate;
 import java.util.*;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -42,6 +46,9 @@ public class AlunoServiceImplTest {
     private  AlunoMapper mapper;
 
     private Aluno aluno;
+
+    private HistoricoTurma historicoTurma;
+
     private Pageable pageable;
 
     @BeforeEach
@@ -52,6 +59,13 @@ public class AlunoServiceImplTest {
         aluno.setIsPcd(false);
 
         pageable = PageRequest.of(0, 10);
+
+        historicoTurma = new HistoricoTurma();
+        historicoTurma.setId(1L);
+        historicoTurma.setDataInicio(LocalDate.of(2023, 1, 1));
+        historicoTurma.setDataFim(null);
+        historicoTurma.setTurma(new Turma());
+        aluno.setHistoricoTurmas(new ArrayList<>(List.of(historicoTurma)));
     }
 
     @Nested
@@ -221,31 +235,51 @@ public class AlunoServiceImplTest {
     class DisableAluno {
 
         @Test
-        @DisplayName("Desabilita um aluno com sucesso")
-        public void disableAlunoSuccessfully() {
-            // Mock do aluno existente
+        @DisplayName("Desabilita um aluno ativo com histórico ativo")
+        void shouldDisableAlunoAndCloseHistorico() {
             given(repository.findById(1L)).willReturn(Optional.of(aluno));
 
-            // Execução do método
             service.disableAluno(1L);
 
-            // Validações
             assertEquals(Status.INATIVO, aluno.getStatus());
-            verify(repository).findById(1L);
+            assertNotNull(historicoTurma.getDataFim());
+            verify(repository).save(aluno);
         }
 
         @Test
-        @DisplayName("Lança AlunoNotFoundException ao tentar desabilitar um aluno inexistente")
-        public void disableAlunoThrowsAlunoNotFoundException() {
-            // Mock de aluno inexistente
+        @DisplayName("Lança exceção quando aluno não possui histórico ativo")
+        void shouldThrowExceptionWhenHistoricoNotActive() {
+            aluno.setHistoricoTurmas(new ArrayList<>()); // Nenhum histórico ativo
+            given(repository.findById(1L)).willReturn(Optional.of(aluno));
+
+            var exception = assertThrows(HistoricoNotFoundException.class, () -> service.disableAluno(1L));
+
+            assertEquals("Historico de turmas do aluno com Id 1 não foi encontrada", exception.getMessage());
+            verify(repository, never()).save(any(Aluno.class));
+        }
+
+        @Test
+        @DisplayName("Lança exceção quando aluno já está inativo")
+        void shouldNotDisableAlunoAlreadyInactive() {
+            aluno.setStatus(Status.INATIVO);
+            given(repository.findById(1L)).willReturn(Optional.of(aluno));
+
+            service.disableAluno(1L);
+
+            assertEquals(Status.INATIVO, aluno.getStatus()); // Status permanece inativo
+            assertNull(historicoTurma.getDataFim()); // Nenhuma alteração no histórico
+            verify(repository, never()).save(any(Aluno.class));
+        }
+
+        @Test
+        @DisplayName("Lança exceção quando aluno não encontrado")
+        void shouldThrowExceptionWhenAlunoNotFound() {
             given(repository.findById(1L)).willReturn(Optional.empty());
 
-            // Execução do método e validação da exceção
-            assertThrows(AlunoNotFoundException.class, () -> service.disableAluno(1L));
+            var exception = assertThrows(AlunoNotFoundException.class, () -> service.disableAluno(1L));
 
-            // Verificar interações
-            verify(repository).findById(1L);
-            verifyNoMoreInteractions(repository);
+            assertEquals("Aluno de Id 1 não foi encontrado", exception.getMessage());
+            verify(repository, never()).save(any(Aluno.class));
         }
     }
 
@@ -259,7 +293,7 @@ public class AlunoServiceImplTest {
             given(repository.findById(1L)).willReturn(Optional.of(aluno));
 
             // Execução do método
-            service.TransferAluno(1L);
+            service.transferAluno(1L);
 
             // Validações
             assertEquals(Status.TRANSFERIDO, aluno.getStatus());
@@ -273,7 +307,7 @@ public class AlunoServiceImplTest {
             given(repository.findById(1L)).willReturn(Optional.empty());
 
             // Execução do método e validação da exceção
-            assertThrows(AlunoNotFoundException.class, () -> service.TransferAluno(1L));
+            assertThrows(AlunoNotFoundException.class, () -> service.transferAluno(1L));
 
             // Verificar interações
             verify(repository).findById(1L);

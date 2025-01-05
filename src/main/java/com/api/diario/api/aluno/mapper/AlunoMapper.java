@@ -1,6 +1,7 @@
 package com.api.diario.api.aluno.mapper;
 
 import com.api.diario.api.aluno.dto.input.AlunoDTOInput;
+import com.api.diario.api.aluno.dto.input.AlunoUpdateDTOInput;
 import com.api.diario.api.aluno.dto.output.AlunoOneDTO;
 import com.api.diario.api.aluno.dto.output.AlunoPageDTO;
 import com.api.diario.domain.model.alunos.Aluno;
@@ -25,6 +26,10 @@ public class AlunoMapper {
 
     public AlunoOneDTO ToDTO(Aluno aluno){
         return mapper.map(aluno, AlunoOneDTO.class);
+    }
+
+    public Aluno ToUpdateModel(AlunoUpdateDTOInput alunoUpdate){
+        return mapper.map(alunoUpdate, Aluno.class);
     }
 
     public Aluno toModel (AlunoDTOInput alunoDTOInput){

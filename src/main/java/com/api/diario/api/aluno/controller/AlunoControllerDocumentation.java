@@ -1,6 +1,7 @@
 package com.api.diario.api.aluno.controller;
 
 import com.api.diario.api.aluno.dto.input.AlunoDTOInput;
+import com.api.diario.api.aluno.dto.input.AlunoUpdateDTOInput;
 import com.api.diario.api.aluno.dto.output.AlunoOneDTO;
 import com.api.diario.api.aluno.dto.output.AlunoPageDTO;
 import io.swagger.v3.oas.annotations.Operation;
@@ -54,6 +55,22 @@ public interface AlunoControllerDocumentation {
     ResponseEntity<AlunoOneDTO> addAluno(AlunoDTOInput alunoDto);
 
 
+    @Operation(summary = "Atualiza um aluno",
+            description = "Atualiza as informações do aluno",
+            responses = {
+                    @ApiResponse(responseCode = "200", description = "OK"),
+
+                    @ApiResponse(responseCode = "400", description = "Erro nos campos digitados",
+                            content = @Content(schema = @Schema(ref = "ProblemDetail"))),
+
+                    @ApiResponse(responseCode = "403", description = "Não autorizado",
+                            content = @Content(schema = @Schema(ref = "ProblemDetail"))),
+
+                    @ApiResponse(responseCode = "404", description = "Aluno de id: xx não foi encontrado",
+                            content = @Content(schema = @Schema(ref = "ProblemDetail")))
+            })
+    public ResponseEntity<AlunoOneDTO> updateAluno( Long alunoId, AlunoUpdateDTOInput alunoDTOInput);
+
     @Operation(summary = "Desabilita um aluno",
             description = "Troca o status para INATIVO",
             responses = {
@@ -72,7 +89,7 @@ public interface AlunoControllerDocumentation {
 
 
 
-    @Operation(summary = "Transfere um aluno",
+    @Operation(summary = "Transfere um aluno de escola",
             description = "Troca o status para TRANSFERIDO",
             responses = {
                     @ApiResponse(responseCode = "204", description = "Transferido com sucesso"),

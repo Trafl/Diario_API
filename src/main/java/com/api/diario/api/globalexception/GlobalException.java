@@ -2,10 +2,13 @@ package com.api.diario.api.globalexception;
 
 import com.api.diario.domain.exception.aluno.AlunoNotFoundException;
 import com.api.diario.domain.exception.aluno.DataExistingException;
+import com.api.diario.domain.exception.historicoturma.HistoricoNotFoundException;
 import com.api.diario.domain.exception.login.ExistUserInDbException;
 import com.api.diario.domain.exception.login.IncorrectPasswordException;
 import com.api.diario.domain.exception.login.InvalidRoleException;
 import com.api.diario.domain.exception.login.UserNotFoundException;
+import com.api.diario.domain.exception.trimestre.TrimestreNotFoundException;
+import com.api.diario.domain.exception.turma.TurmaNotFoundException;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.http.*;
 import org.springframework.validation.FieldError;
@@ -108,6 +111,55 @@ public class GlobalException extends ResponseEntityExceptionHandler {
         log.warn("[{}] - GlobalException: {}", timestamp, e.getMessage());
 
         problem.setTitle("Aluno não foi encontrado");
+        problem.setProperty("timestamp", Instant.now());
+
+        return problem;
+
+    }
+
+    //-------------Turma---------------------------------
+
+    @ExceptionHandler(TurmaNotFoundException.class)
+    ProblemDetail handlerTurmaNotFoundException(TurmaNotFoundException e) {
+
+        ProblemDetail problem = ProblemDetail.forStatusAndDetail(HttpStatus.NOT_FOUND, e.getMessage());
+
+        log.warn("[{}] - GlobalException: {}", timestamp, e.getMessage());
+
+        problem.setTitle("Turma não foi encontrado");
+        problem.setProperty("timestamp", Instant.now());
+
+        return problem;
+
+    }
+
+
+    //-------------Trimestre---------------------------------
+
+    @ExceptionHandler(TrimestreNotFoundException.class)
+    ProblemDetail handlerTrimestreNotFoundException(TrimestreNotFoundException e) {
+
+        ProblemDetail problem = ProblemDetail.forStatusAndDetail(HttpStatus.NOT_FOUND, e.getMessage());
+
+        log.warn("[{}] - GlobalException: {}", timestamp, e.getMessage());
+
+        problem.setTitle("Trimestre não foi encontrado");
+        problem.setProperty("timestamp", Instant.now());
+
+        return problem;
+
+    }
+
+    //-------------HistoricoDeTurmas---------------------------------
+
+    @ExceptionHandler(HistoricoNotFoundException.class)
+    ProblemDetail handlerHistoricoNotFoundException(HistoricoNotFoundException e) {
+
+        ProblemDetail problem = ProblemDetail.forStatusAndDetail(HttpStatus.NOT_FOUND, e.getMessage());
+
+        log.warn("[{}] - GlobalException: {}", timestamp, e.getMessage());
+
+        problem.setTitle("Historico de turmas não foi encontrado");
         problem.setProperty("timestamp", Instant.now());
 
         return problem;

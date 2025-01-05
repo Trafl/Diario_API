@@ -1,6 +1,5 @@
 package com.api.diario.api.turma.dto.input;
 
-import com.api.diario.api.turma.dto.input.ListAlunoIdDTOInput;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;

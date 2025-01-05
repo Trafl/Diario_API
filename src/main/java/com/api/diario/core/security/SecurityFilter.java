@@ -22,7 +22,7 @@ import java.util.List;
 @Log4j2
 @Component
 @RequiredArgsConstructor
-@EnableMethodSecurity(prePostEnabled = true)
+@EnableMethodSecurity()
 public class SecurityFilter extends OncePerRequestFilter {
 
     private final TokenService tokenService;

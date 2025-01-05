@@ -1,7 +1,6 @@
 package com.api.diario.domain.services.trimestre;
 
 import com.api.diario.domain.exception.trimestre.TrimestreNotFoundException;
-import com.api.diario.domain.model.alunos.Aluno;
 import com.api.diario.domain.model.diario.Trimestre;
 import com.api.diario.domain.repository.TrimestreRepository;
 import lombok.RequiredArgsConstructor;

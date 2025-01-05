@@ -1,6 +1,5 @@
 package com.api.diario.api.aluno.dto.output;
 
-import com.api.diario.domain.model.alunos.Status;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;

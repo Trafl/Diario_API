@@ -69,7 +69,7 @@ public interface AlunoControllerDocumentation {
                     @ApiResponse(responseCode = "404", description = "Aluno de id: xx não foi encontrado",
                             content = @Content(schema = @Schema(ref = "ProblemDetail")))
             })
-    public ResponseEntity<AlunoOneDTO> updateAluno( Long alunoId, AlunoUpdateDTOInput alunoDTOInput);
+    ResponseEntity<AlunoOneDTO> updateAluno( Long alunoId, AlunoUpdateDTOInput alunoDTOInput);
 
     @Operation(summary = "Desabilita um aluno",
             description = "Troca o status para INATIVO",

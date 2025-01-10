@@ -10,7 +10,7 @@ public interface DiarioService {
 
     Page<Diario> getDiarios(Long professorId, String anoLetivo, String materia, Long turmaId, Pageable pageable);
 
-    public Diario getOneDiario(Long diarioId);
+    Diario getOneDiario(Long diarioId);
 
     List<String> getAnosLetivos(Long professorId);
 

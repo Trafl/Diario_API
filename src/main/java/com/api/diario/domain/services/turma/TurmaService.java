@@ -5,7 +5,6 @@ import com.api.diario.domain.model.turma.Turma;
 import com.api.diario.domain.model.turma.Turno;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
-import org.springframework.data.repository.query.Param;
 
 import java.util.List;
 

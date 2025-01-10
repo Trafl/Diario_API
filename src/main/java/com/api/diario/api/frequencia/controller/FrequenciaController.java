@@ -72,7 +72,7 @@ public class FrequenciaController implements FrequenciaControllerDocumentation {
     }
 
     @PostMapping("/realizar-chamada")
-    public ResponseEntity makeCall(@RequestBody @Valid ListFrequenciaDTOInput listFrequenciaDTOInput){
+    public ResponseEntity<Void> makeCall(@RequestBody @Valid ListFrequenciaDTOInput listFrequenciaDTOInput){
         log.info("[{}] - [FrequenciaController] Request: POST, EndPoint: 'api/v1/frequencias/realizar-chamada'", timestamp);
         service.makeCall(listFrequenciaDTOInput);
         return ResponseEntity.status(HttpStatus.CREATED).build();

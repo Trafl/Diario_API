@@ -1,6 +1,7 @@
-package com.api.diario.domain.model.alunos;
+package com.api.diario.domain.model.notas;
 
-import com.api.diario.domain.model.diario.Instrumento;
+import com.api.diario.domain.model.alunos.Aluno;
+import com.api.diario.domain.model.instrumento.Instrumento;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;

@@ -1,6 +1,6 @@
 package com.api.diario.domain.services.nota;
 
-import com.api.diario.domain.model.alunos.Nota;
+import com.api.diario.domain.model.notas.Nota;
 import com.api.diario.domain.repository.NotaRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;

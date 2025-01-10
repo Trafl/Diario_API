@@ -1,6 +1,6 @@
 package com.api.diario.domain.repository;
 
-import com.api.diario.domain.model.diario.Trimestre;
+import com.api.diario.domain.model.trimestre.Trimestre;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 

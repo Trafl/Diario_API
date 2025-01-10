@@ -1,6 +1,8 @@
-package com.api.diario.domain.model.diario;
+package com.api.diario.domain.model.trimestre;
 
-import com.api.diario.domain.model.alunos.Frequencia;
+import com.api.diario.domain.model.frequencias.Frequencia;
+import com.api.diario.domain.model.diario.Diario;
+import com.api.diario.domain.model.instrumento.Instrumento;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -36,7 +38,7 @@ public class Trimestre {
     @Column(name = "data")
     private List<LocalDate> aulasRealizadas;
 
-    @OneToMany(mappedBy = "trimestre")
+    @OneToMany(mappedBy = "trimestre", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
     private Set<Instrumento> instrumentos;
 
     @OneToMany(mappedBy = "trimestre", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)

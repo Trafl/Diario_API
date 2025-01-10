@@ -1,7 +1,7 @@
 package com.api.diario.domain.services.trimestre;
 
 import com.api.diario.domain.exception.trimestre.TrimestreNotFoundException;
-import com.api.diario.domain.model.diario.Trimestre;
+import com.api.diario.domain.model.trimestre.Trimestre;
 import com.api.diario.domain.repository.TrimestreRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
@@ -31,15 +31,7 @@ public class TrimestreServiceImpl implements TrimestreService{
     @Override
     public Page<Trimestre> getTrimestres(String nome, Long diarioId, String anoLetivo, String turno, String numeroTurma, String instrumentoNome, LocalDate startDate, LocalDate endDate, Long professorId, Pageable pageable) {
         log.info("[{}] - [TrimestreServiceImpl] - Pesquisando todos os Trimestre ", timestamp);
-        Specification<Trimestre> spec = Specification
-                .where(TrimestreSpecification.hasNome(nome))
-                .and(TrimestreSpecification.hasDiarioId(diarioId))
-                .and(TrimestreSpecification.hasAnoLetivo(anoLetivo))
-                .and(TrimestreSpecification.hasTurno(turno))
-                .and(TrimestreSpecification.hasNumeroTurma(numeroTurma))
-                .and(TrimestreSpecification.hasInstrumentoNome(instrumentoNome))
-                .and(TrimestreSpecification.hasAulasRealizadasBetween(startDate, endDate))
-                .and(TrimestreSpecification.hasProfessorId(professorId));
+        Specification<Trimestre> spec = TrimestreSpecification.createSpecification(nome,  diarioId,  anoLetivo,  turno,  numeroTurma,  instrumentoNome,  startDate,  endDate,  professorId);
 
         return repository.findAll(spec, pageable);
     }
@@ -58,7 +50,6 @@ public class TrimestreServiceImpl implements TrimestreService{
             trimestre.getAulasRealizadas().add(data);
 
             trimestre.setAulasAgendadas(trimestre.getAulasAgendadas() - 1);
-
             repository.save(trimestre);
         } else {
             throw new IllegalStateException("Não há aulas agendadas restantes para este trimestre.");

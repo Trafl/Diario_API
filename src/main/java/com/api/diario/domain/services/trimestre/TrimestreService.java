@@ -1,6 +1,6 @@
 package com.api.diario.domain.services.trimestre;
 
-import com.api.diario.domain.model.diario.Trimestre;
+import com.api.diario.domain.model.trimestre.Trimestre;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 

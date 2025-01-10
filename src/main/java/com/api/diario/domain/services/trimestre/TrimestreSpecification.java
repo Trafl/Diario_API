@@ -1,6 +1,6 @@
 package com.api.diario.domain.services.trimestre;
 
-import com.api.diario.domain.model.diario.Trimestre;
+import com.api.diario.domain.model.trimestre.Trimestre;
 import org.springframework.data.jpa.domain.Specification;
 
 import java.time.LocalDate;
@@ -58,5 +58,20 @@ public class TrimestreSpecification {
     public static Specification<Trimestre> hasProfessorId(Long professorId) {
         return (root, query, criteriaBuilder) ->
                 professorId == null ? null : criteriaBuilder.equal(root.get("diario").get("professorId"), professorId);
+    }
+
+
+    public static Specification<Trimestre> createSpecification(String nome, Long diarioId, String anoLetivo, String turno, String numeroTurma, String instrumentoNome, LocalDate startDate, LocalDate endDate, Long professorId){
+
+        return Specification
+                .where(TrimestreSpecification.hasNome(nome))
+                .and(TrimestreSpecification.hasDiarioId(diarioId))
+                .and(TrimestreSpecification.hasAnoLetivo(anoLetivo))
+                .and(TrimestreSpecification.hasTurno(turno))
+                .and(TrimestreSpecification.hasNumeroTurma(numeroTurma))
+                .and(TrimestreSpecification.hasInstrumentoNome(instrumentoNome))
+                .and(TrimestreSpecification.hasAulasRealizadasBetween(startDate, endDate))
+                .and(TrimestreSpecification.hasProfessorId(professorId));
+
     }
 }

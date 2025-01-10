@@ -1,4 +1,4 @@
-package com.api.diario.domain.model.alunos;
+package com.api.diario.domain.model.frequencias;
 
 public enum Chamada {
 

@@ -2,6 +2,8 @@ package com.api.diario.api.globalexception;
 
 import com.api.diario.domain.exception.aluno.AlunoNotFoundException;
 import com.api.diario.domain.exception.aluno.DataExistingException;
+import com.api.diario.domain.exception.diario.DiarioNotFoundException;
+import com.api.diario.domain.exception.frequencia.FrequenciaNotFoundException;
 import com.api.diario.domain.exception.historicoturma.HistoricoNotFoundException;
 import com.api.diario.domain.exception.login.ExistUserInDbException;
 import com.api.diario.domain.exception.login.IncorrectPasswordException;
@@ -166,19 +168,49 @@ public class GlobalException extends ResponseEntityExceptionHandler {
 
     }
 
+    //-------------Diario---------------------------------
+
+    @ExceptionHandler(DiarioNotFoundException.class)
+    ProblemDetail handlerDiarioNotFoundException(DiarioNotFoundException e) {
+
+        ProblemDetail problem = ProblemDetail.forStatusAndDetail(HttpStatus.NOT_FOUND, e.getMessage());
+
+        log.warn("[{}] - GlobalException: {}", timestamp, e.getMessage());
+
+        problem.setTitle("Diario não foi encontrado");
+        problem.setProperty("timestamp", Instant.now());
+
+        return problem;
+
+    }
+
+    //-------------Frequencia---------------------------------
+
+    @ExceptionHandler(FrequenciaNotFoundException.class)
+    ProblemDetail handlerFrequenciaNotFoundException(FrequenciaNotFoundException e) {
+
+        ProblemDetail problem = ProblemDetail.forStatusAndDetail(HttpStatus.NOT_FOUND, e.getMessage());
+
+        log.warn("[{}] - GlobalException: {}", timestamp, e.getMessage());
+
+        problem.setTitle("Frequencia não foi encontrada");
+        problem.setProperty("timestamp", Instant.now());
+
+        return problem;
+    }
+
+
     @Override
     protected ResponseEntity<Object> handleMethodArgumentNotValid(MethodArgumentNotValidException ex,
                                                                   HttpHeaders headers, HttpStatusCode status, WebRequest request) {
 
         ProblemDetail problem = ProblemDetail.forStatus(HttpStatusCode.valueOf(400));
-        problem.setTitle("Error validating the fields entered");
-        problem.setDetail("One or more fields are invalid. Fill in correctly and try again.");
+        problem.setTitle("Erro ao validar os campos informados");
+        problem.setDetail("Um ou mais campos estão incorretos. Corrija e tente novamente.");
         problem.setProperty("timestamp", Instant.now());
 
         Map<String, String> errors = getErrorFields(ex);
-        errors.forEach((fieldName, message) -> {
-            problem.setProperty(fieldName, message);
-        });
+        errors.forEach(problem::setProperty);
 
         log.error("[{}] - [GlobalException] - MethodArgumentNotValidException: Error validating the fields entered", timestamp);
         errors.forEach((fieldName, message) -> {

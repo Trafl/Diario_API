@@ -2,8 +2,8 @@ package com.api.diario.api.aluno.mapper;
 
 import com.api.diario.api.aluno.dto.input.AlunoDTOInput;
 import com.api.diario.api.aluno.dto.input.AlunoUpdateDTOInput;
-import com.api.diario.api.aluno.dto.output.AlunoOneDTO;
-import com.api.diario.api.aluno.dto.output.AlunoPageDTO;
+import com.api.diario.api.aluno.dto.output.AlunoOneDTOOutput;
+import com.api.diario.api.aluno.dto.output.AlunoPageDTOOutput;
 import com.api.diario.domain.model.alunos.Aluno;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
@@ -20,12 +20,12 @@ public class AlunoMapper {
         mapper.map(alunoUpdate, alunoDb);
     }
 
-    public Page<AlunoPageDTO> PageToPageDTO(Page<Aluno> page){
-        return page.map(aluno -> mapper.map(aluno, AlunoPageDTO.class));
+    public Page<AlunoPageDTOOutput> PageToPageDTO(Page<Aluno> page){
+        return page.map(aluno -> mapper.map(aluno, AlunoPageDTOOutput.class));
     }
 
-    public AlunoOneDTO ToDTO(Aluno aluno){
-        return mapper.map(aluno, AlunoOneDTO.class);
+    public AlunoOneDTOOutput ToDTO(Aluno aluno){
+        return mapper.map(aluno, AlunoOneDTOOutput.class);
     }
 
     public Aluno ToUpdateModel(AlunoUpdateDTOInput alunoUpdate){

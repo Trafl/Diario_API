@@ -1,5 +1,7 @@
 package com.api.diario.domain.model.alunos;
 
+import com.api.diario.domain.model.frequencias.Frequencia;
+import com.api.diario.domain.model.notas.Nota;
 import com.api.diario.domain.model.turma.HistoricoTurma;
 import com.api.diario.domain.model.turma.Turma;
 import jakarta.persistence.*;
@@ -8,7 +10,6 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;

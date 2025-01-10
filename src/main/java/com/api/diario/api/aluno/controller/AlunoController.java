@@ -2,8 +2,8 @@ package com.api.diario.api.aluno.controller;
 
 import com.api.diario.api.aluno.dto.input.AlunoDTOInput;
 import com.api.diario.api.aluno.dto.input.AlunoUpdateDTOInput;
-import com.api.diario.api.aluno.dto.output.AlunoOneDTO;
-import com.api.diario.api.aluno.dto.output.AlunoPageDTO;
+import com.api.diario.api.aluno.dto.output.AlunoOneDTOOutput;
+import com.api.diario.api.aluno.dto.output.AlunoPageDTOOutput;
 import com.api.diario.api.aluno.mapper.AlunoMapper;
 import com.api.diario.domain.services.aluno.AlunoService;
 import jakarta.validation.Valid;
@@ -28,19 +28,19 @@ public class AlunoController implements AlunoControllerDocumentation {
 
     private final AlunoService service;
 
-    private final PagedResourcesAssembler<AlunoPageDTO> pagedResourcesAssembler;
+    private final PagedResourcesAssembler<AlunoPageDTOOutput> pagedResourcesAssembler;
 
     private final AlunoMapper mapper;
 
     String timestamp = LocalDateTime.now().toString();
 
     @GetMapping()
-    public ResponseEntity<PagedModel<EntityModel<AlunoPageDTO>>> listAlunos(@RequestParam(required = false) String nome,
-                                                       @RequestParam(required = false) String numeroMatricula,
-                                                       @RequestParam(required = false) String status,
-                                                       @RequestParam(required = false) Boolean isPcd,
-                                                       @RequestParam(required = false) Long turma_id,
-                                                       @PageableDefault Pageable pageable) {
+    public ResponseEntity<PagedModel<EntityModel<AlunoPageDTOOutput>>> listAlunos(@RequestParam(required = false) String nome,
+                                                                                  @RequestParam(required = false) String numeroMatricula,
+                                                                                  @RequestParam(required = false) String status,
+                                                                                  @RequestParam(required = false) Boolean isPcd,
+                                                                                  @RequestParam(required = false) Long turma_id,
+                                                                                  @PageableDefault Pageable pageable) {
 
         log.info("[{}] - [AlunoController] Request: GET, EndPoint: 'api/v1/alunos'", timestamp);
 
@@ -48,13 +48,13 @@ public class AlunoController implements AlunoControllerDocumentation {
 
         var pageDto = mapper.PageToPageDTO(page);
 
-        PagedModel<EntityModel<AlunoPageDTO>> model = pagedResourcesAssembler.toModel(pageDto);
+        PagedModel<EntityModel<AlunoPageDTOOutput>> model = pagedResourcesAssembler.toModel(pageDto);
 
         return ResponseEntity.ok(model);
     }
 
     @GetMapping("/{alunoId}")
-    public ResponseEntity<AlunoOneDTO> getOneAluno(@PathVariable Long alunoId){
+    public ResponseEntity<AlunoOneDTOOutput> getOneAluno(@PathVariable Long alunoId){
         log.info("[{}] - [AlunoController] Request: GET, EndPoint: 'api/v1/alunos/{}'", timestamp, alunoId);
 
         var aluno = service.getOneAluno(alunoId);
@@ -63,7 +63,7 @@ public class AlunoController implements AlunoControllerDocumentation {
     }
 
     @PostMapping()
-    public ResponseEntity<AlunoOneDTO> addAluno(@RequestBody AlunoDTOInput alunoDto){
+    public ResponseEntity<AlunoOneDTOOutput> addAluno(@RequestBody AlunoDTOInput alunoDto){
         log.info("[{}] - [AlunoController] Request: POST, EndPoint: 'api/v1/alunos'", timestamp);
 
         var aluno = mapper.toModel(alunoDto);
@@ -74,7 +74,7 @@ public class AlunoController implements AlunoControllerDocumentation {
     }
 
     @PutMapping("/{alunoId}")
-    public ResponseEntity<AlunoOneDTO> updateAluno(@PathVariable Long alunoId, @Valid @RequestBody AlunoUpdateDTOInput alunoDTOInput){
+    public ResponseEntity<AlunoOneDTOOutput> updateAluno(@PathVariable Long alunoId, @Valid @RequestBody AlunoUpdateDTOInput alunoDTOInput){
         var alunoUpdate = mapper.ToUpdateModel(alunoDTOInput);
         alunoUpdate = service.updateAluno(alunoId, alunoUpdate);
         return ResponseEntity.ok(mapper.ToDTO(alunoUpdate));

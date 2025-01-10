@@ -2,8 +2,8 @@ package com.api.diario.api.aluno.controller;
 
 import com.api.diario.api.aluno.dto.input.AlunoDTOInput;
 import com.api.diario.api.aluno.dto.input.AlunoUpdateDTOInput;
-import com.api.diario.api.aluno.dto.output.AlunoOneDTO;
-import com.api.diario.api.aluno.dto.output.AlunoPageDTO;
+import com.api.diario.api.aluno.dto.output.AlunoOneDTOOutput;
+import com.api.diario.api.aluno.dto.output.AlunoPageDTOOutput;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -22,7 +22,7 @@ public interface AlunoControllerDocumentation {
             responses = {
                     @ApiResponse(responseCode = "200", description = "OK"),
             })
-    ResponseEntity<PagedModel<EntityModel<AlunoPageDTO>>> listAlunos(String nome,String numeroMatricula, String status,Boolean isPcd,Long turma_id, Pageable pageable);
+    ResponseEntity<PagedModel<EntityModel<AlunoPageDTOOutput>>> listAlunos(String nome, String numeroMatricula, String status, Boolean isPcd, Long turma_id, Pageable pageable);
 
     @Operation(summary = "Pega as informações de um aluno",
             description = "Pega as informações detalhadas do aluno porem não pega nota e frequencia",
@@ -38,7 +38,7 @@ public interface AlunoControllerDocumentation {
                     @ApiResponse(responseCode = "404", description = "Aluno de id: xx não foi encontrado",
                             content = @Content(schema = @Schema(ref = "ProblemDetail")))
             })
-    ResponseEntity<AlunoOneDTO> getOneAluno( Long alunoId);
+    ResponseEntity<AlunoOneDTOOutput> getOneAluno(Long alunoId);
 
 
     @Operation(summary = "Adiciona um Aluno",
@@ -52,7 +52,7 @@ public interface AlunoControllerDocumentation {
                     @ApiResponse(responseCode = "403", description = "Não autorizado",
                             content = @Content(schema = @Schema(ref = "ProblemDetail")))
             })
-    ResponseEntity<AlunoOneDTO> addAluno(AlunoDTOInput alunoDto);
+    ResponseEntity<AlunoOneDTOOutput> addAluno(AlunoDTOInput alunoDto);
 
 
     @Operation(summary = "Atualiza um aluno",
@@ -69,7 +69,7 @@ public interface AlunoControllerDocumentation {
                     @ApiResponse(responseCode = "404", description = "Aluno de id: xx não foi encontrado",
                             content = @Content(schema = @Schema(ref = "ProblemDetail")))
             })
-    ResponseEntity<AlunoOneDTO> updateAluno( Long alunoId, AlunoUpdateDTOInput alunoDTOInput);
+    ResponseEntity<AlunoOneDTOOutput> updateAluno(Long alunoId, AlunoUpdateDTOInput alunoDTOInput);
 
     @Operation(summary = "Desabilita um aluno",
             description = "Troca o status para INATIVO",

@@ -15,6 +15,8 @@ import org.springframework.hateoas.EntityModel;
 import org.springframework.hateoas.PagedModel;
 import org.springframework.http.ResponseEntity;
 
+import java.util.List;
+
 @Tag(name = "Turmas", description = "Controlador da entidade Turma")
 public interface TurmaControllerDocumentation {
     @Operation(summary = "Lista turmas por filtros",
@@ -84,4 +86,13 @@ public interface TurmaControllerDocumentation {
                             content = @Content(schema = @Schema(ref = "ProblemDetail")))
             })
     ResponseEntity<TurmaDTOOutput> addAndTransferAluno(Long turma_id, ListOfAlunosDTOInput input);
+
+
+        @Operation(summary = "Lista o numero das turmas",
+                description = "Lista o numero das turmas filtrando o anoLetivo e o diarioId para preencher o dropDown",
+                responses = {
+                        @ApiResponse(responseCode = "200", description = "OK"),
+                })
+
+        public ResponseEntity<List<String>> getNumerosForDropDown(String anoLetivo, Long diarioId);
 }

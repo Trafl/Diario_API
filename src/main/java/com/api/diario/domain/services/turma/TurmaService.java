@@ -5,6 +5,9 @@ import com.api.diario.domain.model.turma.Turma;
 import com.api.diario.domain.model.turma.Turno;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.repository.query.Param;
+
+import java.util.List;
 
 public interface TurmaService {
 
@@ -17,5 +20,7 @@ public interface TurmaService {
     Turma addAlunosToTurma(Long turma_id, ListOfAlunosDTOInput listAlunoId);
 
     Turma updateTurma(Long turma_id, Turma turmaSrc);
+
+    List<String> numerosForDropDown(String anoLetivo,Long diarioId);
 
 }

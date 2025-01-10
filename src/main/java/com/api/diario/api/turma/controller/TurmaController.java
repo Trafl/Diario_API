@@ -19,6 +19,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Log4j2
 @RestController
@@ -83,5 +84,14 @@ public class TurmaController implements TurmaControllerDocumentation{
         var turma = turmaService.addAlunosToTurma(turma_id, input);
 
         return ResponseEntity.status(HttpStatus.CREATED).body(mapper.toDTO(turma));
+    }
+
+    @GetMapping("/dropdown")
+    public ResponseEntity<List<String>> getNumerosForDropDown(@RequestParam String anoLetivo, @RequestParam Long diarioId){
+        log.info("[{}] - [TurmaController] Request: GET, EndPoint: 'api/v1/turmas/dropdown' ", timestamp);
+
+        var numeros = turmaService.numerosForDropDown(anoLetivo, diarioId);
+
+        return ResponseEntity.ok(numeros);
     }
 }

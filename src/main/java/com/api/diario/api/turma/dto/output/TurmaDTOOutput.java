@@ -1,7 +1,7 @@
 package com.api.diario.api.turma.dto.output;
 
-import com.api.diario.api.aluno.dto.output.AlunoPageDTOResumido;
-import com.api.diario.domain.model.diario.Diario;
+import com.api.diario.api.aluno.dto.output.AlunoPageResumidoDTOOutput;
+import com.api.diario.api.diario.dto.output.DiarioIdDTOOuput;
 import com.api.diario.domain.model.turma.Turno;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -22,7 +22,7 @@ public class TurmaDTOOutput {
 
     private Integer anoLetivo;
 
-    private Set<AlunoPageDTOResumido> alunos;
-    // Modificar DIARIO PARA DTO
-    private Set<Diario> diarios;
+    private Set<AlunoPageResumidoDTOOutput> alunos;
+
+    private Set<DiarioIdDTOOuput> diarios;
 }

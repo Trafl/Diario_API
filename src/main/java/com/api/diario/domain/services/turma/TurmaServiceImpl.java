@@ -20,6 +20,7 @@ import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Log4j2
 @Service
@@ -112,5 +113,10 @@ public class TurmaServiceImpl implements TurmaService{
         turma = addTurma(turma);
         log.info("[{}] - [TurmaServiceImpl] - Turma de id: {} foi atualizada", timestamp, turma_id);
         return turma;
+    }
+
+    @Override
+    public List<String> numerosForDropDown(String anoLetivo, Long diarioId) {
+        return turmaRepository.getNumeroTurmasByAnoLetivoAndDiarioId(anoLetivo, diarioId);
     }
 }

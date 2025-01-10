@@ -6,14 +6,13 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.time.LocalDate;
+
 @Getter
 @Setter
 @NoArgsConstructor
-public class FrequenciaDTOInput {
+public class FrequenciaUpdateDTOInput {
 
-    @NotNull
-    private Long aluno_id;
-
-    @NotNull
     private Chamada chamada;
+
 }

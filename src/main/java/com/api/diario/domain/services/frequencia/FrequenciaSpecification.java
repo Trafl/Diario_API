@@ -1,6 +1,6 @@
 package com.api.diario.domain.services.frequencia;
 
-import com.api.diario.domain.model.alunos.Frequencia;
+import com.api.diario.domain.model.frequencias.Frequencia;
 import org.springframework.data.jpa.domain.Specification;
 
 import java.time.LocalDate;

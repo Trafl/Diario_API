@@ -1,5 +1,6 @@
 package com.api.diario.domain.model.diario;
 
+import com.api.diario.domain.model.trimestre.Trimestre;
 import com.api.diario.domain.model.turma.Turma;
 import com.api.diario.domain.model.usuarios.ProfessorRole;
 import jakarta.persistence.*;
@@ -38,5 +39,5 @@ public class Diario {
 
     private String anoLetivo;
 
-    private LocalDate data_criacao;
+    private LocalDate dataCriacao;
 }

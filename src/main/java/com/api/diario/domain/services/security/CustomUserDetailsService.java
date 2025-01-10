@@ -1,5 +1,6 @@
 package com.api.diario.domain.services.security;
 
+import com.api.diario.domain.model.usuarios.CustomUserDetails;
 import com.api.diario.domain.model.usuarios.Usuario;
 import com.api.diario.domain.repository.UsuarioRepository;
 import lombok.RequiredArgsConstructor;
@@ -20,10 +21,9 @@ public class CustomUserDetailsService implements UserDetailsService {
 
         var role = usuario.getUsuarioRole().getRole();
 
-        var authorities =  new SimpleGrantedAuthority("ROLE_" + role.toUpperCase());
+        var authorities = List.of(new SimpleGrantedAuthority("ROLE_" + role.toUpperCase()));
 
-        return new org.springframework.security.core.userdetails.
-                User(usuario.getEmail(), usuario.getPassword(), List.of(authorities));
+        return new CustomUserDetails(usuario.getId(), usuario.getEmail(), usuario.getPassword(),authorities);
 
     }
 }

@@ -1,6 +1,7 @@
 package com.api.diario.core.security;
 
 import com.api.diario.domain.exception.login.UserNotFoundException;
+import com.api.diario.domain.model.usuarios.CustomUserDetails;
 import com.api.diario.domain.model.usuarios.Usuario;
 import com.api.diario.domain.repository.UsuarioRepository;
 import jakarta.servlet.FilterChain;
@@ -47,7 +48,10 @@ public class SecurityFilter extends OncePerRequestFilter {
                     var authorities = roles.stream()
                             .map(role -> new SimpleGrantedAuthority("ROLE_" + role.toUpperCase())).toList();
 
-                    var authentication = new UsernamePasswordAuthenticationToken(usuario, null, authorities);
+                    var customUserDetails = new CustomUserDetails(usuario.getId(), usuario.getEmail(), usuario.getPassword(), authorities);
+
+                    var authentication = new UsernamePasswordAuthenticationToken(customUserDetails, null, authorities);
+
                     SecurityContextHolder.getContext().setAuthentication(authentication);
                 }
             } catch (IllegalArgumentException e) {
